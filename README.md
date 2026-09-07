@@ -6,7 +6,7 @@ Yunju Im and Aixin Tan. (2026). Bayesian Mixture Models with Structured Sparsity
 
 ## Description
 
-1. `MFM.jl`, `ftns.jl`, and `ftns-BHHM.jl` contain the main and supporting functions for implementing the proposed BHHM method and generating posterior samples.
+1. `ftns-BHHM.jl` and `MFM.jl` contain the main and supporting functions for implementing the proposed BHHM method and generating posterior samples.
 2. `dat1.csv` contains the simulated dataset used in the toy example.
 
 ## Examples
@@ -18,9 +18,7 @@ using StatsBase, Statistics, LinearAlgebra, Distributions, Random
 using CSV, DataFrames, JLD2
 
 # Load model functions and simulated data
-include("MFM.jl")
-include("ftns.jl")
-include("ftns-htr-hm-MFM.jl")
+include("ftns-BHHM.jl")
 
 simdat = CSV.read("dat1.csv", DataFrame)
 
@@ -33,11 +31,8 @@ n = length(y)
 x = [X[i, :] for i in 1:n]
 H = construct_hp(x)
 
-# MCMC settings
-n_total, n_burn = 2000, 500
-
-
 # Run posterior sampler
+n_total, n_burn = 2000, 1000
 s1 = run_sampler(y, x, H, n_total = n_total, Initial_z = ones(Int64, n), t_max=26, log_pk="k -> log(0.5) + (k-1) * log(0.5)")
 
 # Posterior inclusion probabilities conditional on two subgroups
