@@ -6,7 +6,7 @@ Yunju Im and Aixin Tan. (2026). Bayesian Mixture Models with Structured Sparsity
 
 ## Description
 
-1. `MFM.jl`, `ftns.jl`, and `ftns-htr-hm-MFM.jl` contain the main and supporting functions for generating MCMC samples from the proposed heterogeneous-homogeneous mixture-of-finite-mixtures model.
+1. `MFM.jl`, `ftns.jl`, and `ftns-BHHM.jl` contain the main and supporting functions for implementing the proposed BHHM method and generating posterior samples.
 2. `dat1.csv` contains the simulated dataset used in the toy example.
 
 ## Examples
