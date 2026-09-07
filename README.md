@@ -31,57 +31,22 @@ X = Matrix(select(simdat, r"^x"))
 
 n = length(y)
 x = [X[i, :] for i in 1:n]
-
-# Construct hyperparameters
-function construct_hp(x)
-    n = length(x)
-    p = length(x[1])
-
-    ar, br, aw, bw = 1.0, 1.0, 1.0, 1.0
-    s2b, s2eta = 10.0, 10.0
-    s2b_, s2eta_ = 1 / 10, 1 / 10
-    a0, b0 = 1.0, 0.0001
-    t_max = 20
-
-    return hp(
-        n, p, ar, br, aw, bw,
-        s2b, s2eta, s2b_, s2eta_,
-        a0, b0, t_max,
-    )
-end
-
 H = construct_hp(x)
 
 # MCMC settings
-n_total = 10000
-n_burn = 5000
+n_total, n_burn = 2000, 500
 
-Random.seed!(1)
-z0 = ones(Int64, n)
 
 # Run posterior sampler
-s1 = run_sampler(
-    y,
-    x,
-    H,
-    n_total=n_total,
-    Initial_z=z0,
-    t_max=26,
-    log_pk="k -> log(0.5) + (k-1) * log(0.5)",
-)
+s1 = run_sampler(y, x, H, n_total = n_total, Initial_z = ones(Int64, n), t_max=26, log_pk="k -> log(0.5) + (k-1) * log(0.5)")
 
 # Posterior inclusion probabilities conditional on two subgroups
 id = findall(==(2), s1.t[(n_burn + 1):n_total]) .+ n_burn
-htr = s1.w .* s1.r
-hm = (.!s1.w) .* s1.r
+r_htr = s1.w .* s1.r
+r_hm = (.!s1.w) .* s1.r
 
+# Posterior inclusion probabilities
 pip = vec(mean(s1.r[2:end, id], dims=2))
-pip_htr = vec(mean(htr[2:end, id], dims=2))
-pip_hm = vec(mean(hm[2:end, id], dims=2))
-
-# Selected heterogeneous and homogeneous predictors
-selected_htr = findall(>(0.5), pip_htr)
-selected_hm = findall(>(0.5), pip_hm)
 ```
 
 For more information, please contact Yunju Im at yim@unmc.edu.
